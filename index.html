@@ -1,59 +1,77 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
-	<title>Tabbed Form</title>
-	<script src="js/jquery.js" type="text/javascript"></script>
-	<script src="js/animation.js" type="text/javascript"></script>
-	<script src="js/validation.js" type="text/javascript"></script>
-	<link rel="stylesheet" href="css/style.css" type="text/css" />
+<title>My Movies</title>
+	<style>
+		h1{text-align:center;}
+		h4{margin:0;padding:5px;background:#f4f4f4;}
+		li{list-style:none;padding-left:5px;}
+		#container{width:600px;margin:80px auto;overflow:hidden;border:1px #666 dashed;padding:15px;min-height:200px;}
+	</style>
+<script>
+
+function getMovieTitles(){
+	var xmlhttp;
+	if (window.XMLHttpRequest){
+		xmlhttp = new XMLHttpRequest();
+	} else {
+  		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  	}
+	xmlhttp.onreadystatechange = function(){
+  		if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+    		var jsondata = JSON.parse(xmlhttp.responseText); //retrieve result as an JavaScript object
+   			var movies = jsondata.movies;
+			var output='<form>';
+			output+='<select id="movie_select" onchange="movieSelect()" >';
+   			for (var i=0; i < movies.length; i++){
+    			output +='<option value="'+i+'">'+movies[i].title+'</option>';
+   			}
+			output+='</select>';
+			output+='</form>';
+   			document.getElementById("movie_title").innerHTML=output;
+    	}
+  	}
+	xmlhttp.open("GET","movies.json",true);
+	xmlhttp.send();
+}
+
+
+function movieSelect(){
+	var selectBox = document.getElementById("movie_select");
+	var movieIndex = selectBox.options[selectBox.selectedIndex].value;
+	getMovieInfo(movieIndex);
+}
+
+
+function getMovieInfo(i){
+	var xmlhttp;
+	if (window.XMLHttpRequest){
+		xmlhttp = new XMLHttpRequest();
+	} else {
+  		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  	}
+	xmlhttp.onreadystatechange = function(){
+  		if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+    		var jsondata = JSON.parse(xmlhttp.responseText); //retrieve result as an JavaScript object
+   			var movies = jsondata.movies;
+			var output='';
+   			output+= '<li>Year: '+movies[i].year+'</li>';
+			output+= '<li>Genre: '+movies[i].genre+'</li>';
+			output+= '<li>Director: '+movies[i].director+'</li>';
+   			document.getElementById("movie_info").innerHTML=output;
+    	}
+  	}
+	xmlhttp.open("GET","movies.json",true);
+	xmlhttp.send();
+}
+</script>
 </head>
-<body>
-
-<form name="myform" onsubmit="return validateForm()">
-<ul>
-	<li class="title">Who Are You?</li>
-	<li class="fields">
-		<label>*First Name:</label><br />
-		<input id="first_name" class="req" type="text" /><br />
-		<label>Middle Name:</label><br />
-		<input id="middle_name" type="text" /><br />
-		<label>Last Name:</label><br />
-		<input id="last_name" type="text" /><br />
-		<label>*Email:</label><br />
-		<input id="email" class="req" type="text" /><br />
-	</li>
-	<li class="title">Where Are You?</li>
-	<li class="fields">
-		<label>City:</label><br />
-		<input id="city" type="text" /><br />
-		<label>*State:</label><br />
-		<input id="state" class="req" type="text" /><br />
-		<label>Country:</label><br />
-		<input id="country" type="text" /><br />
-	</li>
-	<li class="title">What Do You Do?</li>
-	<li class="fields">
-		<label>
-		*Occupation:</label><br />
-		<input id="occupation" class="req" type="text" /><br />
-		<label>Company:</label><br />
-		<input id="company" type="text" /><br />
-		<label>Company Location:</label><br />
-		<input id="location" type="text" /><br />
-	</li>
-</ul>
-<input type="submit" value="Submit Form" />
-</form>
-
+<body onload="getMovieTitles()">
+<div id="container">
+<h1>My Favorite Movies</h1>
+	<div id="movie_title"></div>
+	<br />
+	<div id="movie_info"></div>
+</div>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-

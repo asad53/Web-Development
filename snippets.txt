@@ -1,136 +1,102 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
-	<title>Tabbed Form</title>
+<title>My Movies</title>
 </head>
 <body>
 
-
-
-<!doctype html>
-<html>
-<head>
-	<title>Tabbed Form</title>
-	<script src="js/jquery.js" type="text/javascript"></script>
-	<script src="js/animation.js" type="text/javascript"></script>
-	<script src="js/validation.js" type="text/javascript"></script>
-	<link rel="stylesheet" href="css/style.css" type="text/css" />
-</head>
-<body>
-
-
-
-<form name="myform" onsubmit="return validateForm()">
-<ul>
-	<li class="title">Who Are You?</li>
-	<li class="fields">
-		<label>*First Name:</label><br />
-		<input id="first_name" class="req" type="text" /><br />
-		<label>Middle Name:</label><br />
-		<input id="middle_name" type="text" /><br />
-		<label>Last Name:</label><br />
-		<input id="last_name" type="text" /><br />
-		<label>*Email:</label><br />
-		<input id="email" class="req" type="text" /><br />
-	</li>
-	<li class="title">Where Are You?</li>
-	<li class="fields">
-		<label>City:</label><br />
-		<input id="city" type="text" /><br />
-		<label>*State:</label><br />
-		<input id="state" class="req" type="text" /><br />
-		<label>Country:</label><br />
-		<input id="country" type="text" /><br />
-	</li>
-	<li class="title">What Do You Do?</li>
-	<li class="fields">
-		<label>
-		*Occupation:</label><br />
-		<input id="occupation" class="req" type="text" /><br />
-		<label>Company:</label><br />
-		<input id="company" type="text" /><br />
-		<label>Company Location:</label><br />
-		<input id="location" type="text" /><br />
-	</li>
-</ul>
-<input type="submit" value="Submit Form" />
-</form>
 </body>
 </html>
 
 
 
------------------CSS-------------------
+<div id="container">
+<h1>My Favorite Movies</h1>
+	<div id="movie_title"></div>
+	<br />
+	<div id="movie_info"></div>
+</div>
 
 
 
-body {
-    width: 500px;
+<style>
+		h1{text-align:center;}
+		h4{margin:0;padding:5px;background:#f4f4f4;}
+		li{list-style:none;padding-left:5px;}
+		#container{width:600px;margin:80px auto;overflow:hidden;border:1px #666 dashed;padding:15px;min-height:200px;}
+	</style>
 	
-    margin: auto;
-    text-align: center;
+function getMovieTitles(){	
+var xmlhttp;
+	if (window.XMLHttpRequest){
+		xmlhttp = new XMLHttpRequest();
+	} else {
+  		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  	}
+	xmlhttp.onreadystatechange = function(){
+  		if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+    		
+    	}
+  	}
+	xmlhttp.open("GET","movies.json",true);
+	xmlhttp.send();
 }
-
-li {
-	list-style:none;
 }
-
-li.fields {
-    margin: 0;
 	
-    padding: 1em 0;
-}
-
-li.title {
-    cursor: pointer;
-    
 	
-    font-weight: bold;
-    font-size : 1.5em;
-    line-height: 2em;
-    background: #e3e3e3;
-    border-bottom: 1px solid #c5c5c5;
-    border-top: 1px solid white;
+
+function getMovieTitles(){
+	var xmlhttp;
+	if (window.XMLHttpRequest){
+		xmlhttp = new XMLHttpRequest();
+	} else {
+  		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  	}
+	xmlhttp.onreadystatechange = function(){
+  		if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+    		var jsondata = JSON.parse(xmlhttp.responseText); //retrieve result as an JavaScript object
+   			var movies = jsondata.movies;
+			var output='<form>';
+			output+='<select id="movie_select" onchange="movieSelect()" >';
+   			for (var i=0; i < movies.length; i++){
+    			output +='<option value="'+i+'">'+movies[i].title+'</option>';
+   			}
+			output+='</select>';
+			output+='</form>';
+   			document.getElementById("movie_title").innerHTML=output;
+    	}
+  	}
+	xmlhttp.open("GET","movies.json",true);
+	xmlhttp.send();
 }
 
-.hide { display: none;}
 
 
------------------ANIMATION.JS-------------------
-
-
-$(document).ready(function(){
-	$('li.fields').filter(':nth-child(n+4)').addClass('hide');
-
-	$('ul').on('click', 'li.title', function() {
-		$(this)
-			.next()
-				.slideDown(200)
-				.siblings('li.fields')
-					.slideUp(200);
-	});
-});
-
-
------------------VALIDATION.JS-------------------
-
-
-function validateForm(){
-	/* Loop through fields with the class of "req" */
-	for (var i = 0; i < myform.elements.length; i++) {
-        if (myform.elements[i].className == "req" && myform.elements[i].value.length == 0) {
-            alert('Please fill in all required fields');
-            return false;
-        }
-    }
-	
-	/* Make sure the email value is a valid email address */
-	var email  = document.getElementById('email').value;
-	var atpos  = email.indexOf("@");
-	var dotpos = email.lastIndexOf(".");
-	if (atpos < 1 || dotpos < atpos+2 || dotpos+2 >= x.length){
-  		alert('Please use a valid email address');
-        return false;
-  }
+function movieSelect(){
+	var selectBox = document.getElementById("movie_select");
+	var movieIndex = selectBox.options[selectBox.selectedIndex].value;
+	getMovieInfo(movieIndex);
 }
 
+
+function getMovieInfo(i){
+	var xmlhttp;
+	if (window.XMLHttpRequest){
+		xmlhttp = new XMLHttpRequest();
+	} else {
+  		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  	}
+	xmlhttp.onreadystatechange = function(){
+  		if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+    		var jsondata = JSON.parse(xmlhttp.responseText); //retrieve result as an JavaScript object
+   			var movies = jsondata.movies;
+			var output='';
+   			output+= '<li>Year: '+movies[i].year+'</li>';
+			output+= '<li>Genre: '+movies[i].genre+'</li>';
+			output+= '<li>Director: '+movies[i].director+'</li>';
+   			document.getElementById("movie_info").innerHTML=output;
+    	}
+  	}
+	xmlhttp.open("GET","movies.json",true);
+	xmlhttp.send();
+}
